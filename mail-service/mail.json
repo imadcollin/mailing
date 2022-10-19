@@ -1,0 +1,14 @@
+﻿{
+  "Smtp": {
+    "Host": "smtp.mailtrap.io",
+    "Port": 2525,
+    "Username": "c735ccc4462369",
+    "Password": "e0029c94e7a154"
+  },
+  "Info" : {
+    "From":"example@gamil.com" ,
+    "To": "imad.collin@gamil.com", 
+    "Subject": "subject",
+    "Body": "Some body data" 
+  }
+}

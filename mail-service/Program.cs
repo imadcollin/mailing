@@ -3,4 +3,6 @@
 using mail_service;
 
 Console.WriteLine("Hello World!");
-
+CsvDataReader s = new CsvDataReader(); 
+Console.WriteLine(s.getData());
+Mailer.sendEmail();
