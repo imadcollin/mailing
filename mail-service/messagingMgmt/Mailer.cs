@@ -1,17 +1,17 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
+using mail_service.messagingMgmt;
 
 namespace mail_service;
 
-public class Mailer
+public class Mailer : IMessageMgmt
 {
-    private static readonly string CONFIG_FILE = "C:\\Users\\imadc\\RiderProjects\\mailing\\mail-service\\mail.json";
+    private static readonly string CONFIG_FILE =
+        "C:\\Users\\imadc\\RiderProjects\\mailing\\mail-service\\messagingMgmt\\mail.json";
 
-    public static void sendEmail()
+    public void SendMessage(string firstName)
     {
-        var config = getConfig();
+        var config = Util.GetConfig(CONFIG_FILE);
         var host = config["Smtp:Host"];
         var port = Convert.ToInt32(config["Smtp:Port"]);
         var username = config["Smtp:Username"];
@@ -26,15 +26,18 @@ public class Mailer
             Credentials = new NetworkCredential(username, password),
             EnableSsl = true
         };
-        
-        client.Send(from, to, subject, body);
+
+        client.Send(from, to, subject, ConcatFirstname(body, firstName));
         Console.WriteLine("Email sent");
     }
 
-    private static IConfigurationRoot getConfig()
+    private static string ConcatFirstname(string body, string firstname)
     {
-        return new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile(CONFIG_FILE).Build();
+        if (!String.IsNullOrEmpty(body) && !String.IsNullOrEmpty(firstname))
+        {
+            return String.Concat(body, " ", firstname, " !");
+        }
+
+        return "";
     }
 }

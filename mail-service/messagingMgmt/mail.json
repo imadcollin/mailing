@@ -8,7 +8,7 @@
   "Info" : {
     "From":"example@gamil.com" ,
     "To": "imad.collin@gamil.com", 
-    "Subject": "subject",
-    "Body": "Some body data" 
+    "Subject": "Happy birthday!",
+    "Body": " Happy birthday, dear" 
   }
 }

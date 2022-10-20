@@ -27,7 +27,7 @@ public class CsvDataReader : IDataInterface
             using (var csv = new CsvReader(textReader, configuration))
             {
                 csv.Context.RegisterClassMap<PersonDataMapper>();
-                var data = csv.GetRecords<Person>();
+                var data = csv.GetRecords<Person>().ToList();
                 //var dataAsync = csv.GetRecordsAsync<Person>(); 
                 return data;
                 /*
