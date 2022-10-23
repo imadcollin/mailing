@@ -1,4 +1,7 @@
-﻿namespace mail_service.messagingMgmt;
+﻿using mail_service.messagingMgmt;
+using Timer = System.Timers.Timer;
+
+namespace mail_service;
 
 public class Reminder
 {
@@ -15,17 +18,7 @@ public class Reminder
 
         return INSTANCE;
     }
-
-    public bool PersonHasBrithDay(Person person)
-    {
-        if (person != null)
-        {
-            return person.BirthDay == Today.AddDays(-1);
-        }
-
-        return false;
-    }
-
+    
     public List<Person> SortContactsByBirthday(List<Person> contactList)
     {
         contactList.Sort((x, y) => x.BirthDay.CompareTo(y.BirthDay));
@@ -36,13 +29,13 @@ public class Reminder
     {
         if (Util.AnyAndNotNull(contactList))
         {
-            return contactList.FindAll(x => x.BirthDay == Today.AddDays(-1));
+            return contactList.FindAll(x => x.BirthDay == Today.AddDays(1));
         }
 
         return null;
     }
 
-    private bool ContactsHasBirthday(List<Person> contactList)
+    public bool ContactsHasBirthday(List<Person> contactList)
     {
         if (Util.AnyAndNotNull(contactList))
         {
@@ -54,21 +47,22 @@ public class Reminder
 
     public void IntervalBirthDayCheck(List<Person> listOfContacts)
     {
-        //today -> looop -> has any birthday? -> send reminder. 
-        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-
-        System.Timers.Timer timer = new(interval: 1000);
-        timer.Elapsed += (sender, e) => notifyIfAnyReminder(listOfContacts);
+        Timer timer = new(interval: 1000);
+        timer.Elapsed += (sender, e) => notifyIfAnyReminder(listOfContacts, timer);
         timer.Start();
-
-        Console.ReadLine(); // To make sure the console app keeps running.
-        System.Threading.Thread.Sleep(100000);
-
-        timer.Dispose();
+        Console.ReadLine();
+        timer = new(interval: 86400000); //One Day.
+        timer.Start();
     }
 
-    private void notifyIfAnyReminder(List<Person> listOfContacts)
+    private void notifyIfAnyReminder(List<Person> listOfContacts,Timer timer)
     {
-        // TODO::
+        Console.WriteLine("Notification");
+        if (ContactsHasBirthday(listOfContacts))
+        {
+            Console.WriteLine("Tomorrow it is someone birthday....");
+            timer.Stop();
+            timer.Dispose();
+        }
     }
 }

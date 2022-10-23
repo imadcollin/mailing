@@ -1,16 +1,16 @@
 ﻿namespace mail_service.messagingMgmt;
 
-public class MessageMgmt :IMessageInterface 
+public class MessageMgmt : IMessageInterface
 {
-    private  Mailer _mailer = Mailer.GetInstance();
-    
-    public void SendMessage(Person person, Message msg)
-    {
-        _mailer.SendMessage(person,msg);
-    }
+    private Mailer? _mailer = Mailer.GetInstance();
 
-    public void SendReminder(List<Person> listOfContacts, Message message)
+    public void SendMessage(Person person)
     {
-     //   _mailer.SendReminder(listOfContacts,message);
+        if (IMessageInterface.PersonHasBrithDay(person))
+        {
+            _mailer.SendMessage(person);
+        }
+        else
+            throw new Exception("NO message will be sent, Person has no birthday...");
     }
 }

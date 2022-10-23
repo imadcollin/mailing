@@ -4,14 +4,23 @@ using System.Runtime.Intrinsics.X86;
 using mail_service;
 using mail_service.messagingMgmt;
 
-Console.WriteLine("Hello World!");
-CsvDataReader s = new CsvDataReader();
 
-//    Console.WriteLine(s.getData().FirstOrDefault().FirstName);
+//READ DATA 
 
+DoWork();
 
-//new Mailer().SendMessage(s.getData().First().FirstName);
+static void DoWork()
+{
+    Console.WriteLine("Welcome to the Mail Service!");
 
-//Reminder.PersonHasBrithDay(s.getData().ToList().First());
-ReminderMgmt reminderMgmt = new ReminderMgmt();
-reminderMgmt.IntervalBirthDayCheck(s.getData().ToList());
+    CsvDataReader reader = new CsvDataReader();
+    Person person = reader.getData().First();
+    List<Person> persons = reader.getData().ToList();
+
+    IMessageInterface messageInterface = new MessageMgmt();
+    //messageInterface.SendMessage(person);
+
+    IReminderInterface reminderInterface = new ReminderMgmt();
+    reminderInterface.IntervalBirthDayCheck(persons);
+    //reminderInterface.SendReminder(persons);
+}

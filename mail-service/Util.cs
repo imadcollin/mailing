@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace mail_service.messagingMgmt;
+namespace mail_service;
 
 public static class Util
 {
-    public static IConfigurationRoot GetConfig(string filePath)
+    public static IConfigurationRoot? GetConfig(string filePath)
     {
         return new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -13,7 +13,7 @@ public static class Util
     
     public static bool AnyAndNotNull<T>(this IEnumerable<T> source)
     {
-        if (source != null && source.Any())
+        if (source != null &&! source.Any())
         {
             throw new InvalidOperationException("Sequence contains no elements");
         }

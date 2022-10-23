@@ -7,8 +7,7 @@ using CsvHelper.Configuration;
 
 public class CsvDataReader : IDataInterface
 {
-    private static readonly string CSV_FILE =
-        "C:\\Users\\imadc\\RiderProjects\\mailing\\mail-service\\data\\Friends.csv";
+    private static readonly string CSV_FILE = Constants.CSV_FILE;
 
 
     public IEnumerable<Person> getData()
@@ -30,17 +29,6 @@ public class CsvDataReader : IDataInterface
                 var data = csv.GetRecords<Person>().ToList();
                 //var dataAsync = csv.GetRecordsAsync<Person>(); 
                 return data;
-                /*
-
-                 //await 
-                foreach (var person in data)
-                {
-                    Console.WriteLine(person.FirstName);
-                    Console.WriteLine(person.LastName);
-                    Console.WriteLine(person.Email);
-                    Console.WriteLine(person.BirthDay.ToString(("MM/dd/yyyy")));
-                }
- */
             }
         }
     }

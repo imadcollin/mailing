@@ -6,9 +6,9 @@ public class PersonDataMapper : ClassMap<Person>
 {
     public PersonDataMapper()
     {
-        Map(m => m.FirstName).Name("first_name");
-        Map(m => m.LastName).Name("last_name");
-        Map(m => m.Email).Name("email");
-        Map(m => m.BirthDay).Name("date_of_birth");
+        Map(m => m.FirstName).Name(Constants.FirstName);
+        Map(m => m.LastName).Name(Constants.LastName);
+        Map(m => m.Email).Name(Constants.Email);
+        Map(m => m.BirthDay).Name(Constants.BirthDay);
     }
 }

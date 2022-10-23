@@ -7,42 +7,33 @@ namespace mail_service;
 
 public class Mailer : IMessageInterface
 {
-    private static readonly string CONFIG_FILE =
-        "C:\\Users\\imadc\\RiderProjects\\mailing\\mail-service\\messagingMgmt\\mail.json";
+    private static readonly string ConfigFile = Constants.CONFIG_FILE;
+    private static  Mailer? Instance=null;
+    private static SmtpClient? _smtpClient;
+    private static IConfigurationRoot? _config;
 
-    private static Mailer INSTANCE;
-    private static SmtpClient _smtpClient;
-    private static IConfigurationRoot _config;
-    private static string _from;
-
-    public static Mailer GetInstance()
+    public static Mailer? GetInstance()
     {
-        if (INSTANCE == null)
+        if (Instance == null)
         {
             return new Mailer();
         }
 
-        return INSTANCE;
+        return Instance;
     }
 
     private Mailer()
     {
-        _config = Util.GetConfig(CONFIG_FILE);
+        _config = Util.GetConfig(ConfigFile);
         _smtpClient = InitSmtpClient();
-        _from = getEmail();
-    }
-
-    private string getEmail()
-    {
-        return _config["Info:From"];
     }
 
     private SmtpClient InitSmtpClient()
     {
-        var host = _config["Smtp:Host"];
-        var port = Convert.ToInt32(_config["Smtp:Port"]);
-        var username = _config["Smtp:Username"];
-        var password = _config["Smtp:Password"];
+        var host = _config[Constants.Smtp_Host];
+        var port = Convert.ToInt32(_config[Constants.Smtp_Port]);
+        var username = _config[Constants.Stmp_User];
+        var password = _config[Constants.Stmp_Pass];
 
         var client = new SmtpClient(host, port)
         {
@@ -52,35 +43,77 @@ public class Mailer : IMessageInterface
         return client;
     }
 
-    public void SendMessage(Person person, Message msg)
+    public void SendMessage(Person person)
     {
-        _smtpClient.Send(_from, msg.To, msg.Subject, ConcatFirstname(msg.Body, person.FirstName));
+        Message msg = BuildMessage(person);
+        _smtpClient.Send(msg.From, person.Email, msg.Subject, msg.Body);
         Console.WriteLine("Email sent");
     }
 
+    private Message BuildMessage(Person person)
+    {
+        return new Message(_config[Constants.Info_From], person.Email, _config[Constants.Info_Subject],
+            GetBody("Happy birthday, dear"
+                , person.FirstName));
+    }
 
-    public void SendReminder(List<Person> listOfContacts, Message msg)
+    public void SendReminder(List<Person> listOfContacts)
     {
         if (Util.AnyAndNotNull(listOfContacts))
         {
             if (listOfContacts.Count == 1)
             {
-                Person person = listOfContacts.First();
-                _smtpClient.Send(_from, msg.To, msg.Subject, ConcatFirstname(msg.Body, person.FirstName));
+                Message? msg = BuildReminderMsg(listOfContacts);
+                _smtpClient.Send(msg.From, msg.To, msg.Subject, (msg.Body));
+                Console.WriteLine("Reminder sent");
             }
             else
             {
-                listOfContacts.ToList().ForEach(p =>
-                    _smtpClient.Send(_from, msg.To, msg.Subject, ConcatFirstname(msg.Body, p.FirstName)));
+                foreach (Person unused in listOfContacts)
+                {
+                    Message? msg = BuildReminderMsg(listOfContacts);
+                    _smtpClient.Send(msg.From, msg.To, msg.Subject, msg.Body);
+                    Console.WriteLine("Reminder sent");
+                }
             }
         }
     }
 
-    private static string ConcatFirstname(string body, string firstname)
+    private Message? BuildReminderMsg(List<Person> persons)
+    {
+        string body = "";
+        if (persons.Count == 1)
+        {
+            body =
+                $"Today is  {persons.FirstOrDefault()?.FirstName} {persons.FirstOrDefault()?.LastName} s birthday Don't forget to send him a message !";
+            return new Message(_config[Constants.Info_From], persons.FirstOrDefault()?.Email,
+                _config[Constants.Reminder_Subject], body);
+        }
+        
+            body = $"Today is  {GetFullNames(persons)}s birthday Don't forget to send them a message !";
+            foreach (Person person in persons)
+            {
+                return new Message(_config[Constants.Info_From], person.Email, _config[Constants.Reminder_Subject],
+                    body);
+            }
+            return null;
+    }
+
+    private static string GetFullNames(List<Person> persons)
+    {
+        string[] names = new string[persons.Capacity];
+        for (int i = 0; i < persons.Capacity; i++)
+        {
+            names[i] = ($"{persons[i].LastName}   {persons[i].FirstName}");
+        }
+        return string.Join(", ", names);
+    }
+
+    private static string GetBody(string body, string firstname)
     {
         if (!String.IsNullOrEmpty(body) && !String.IsNullOrEmpty(firstname))
         {
-            return String.Concat(body, " ", firstname, " !");
+            return string.Concat(body, " ", firstname, " !");
         }
 
         return "";
