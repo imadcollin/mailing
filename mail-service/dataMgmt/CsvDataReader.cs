@@ -9,8 +9,7 @@ public class CsvDataReader : IDataInterface
 {
     private static readonly string CSV_FILE = Constants.CSV_FILE;
 
-
-    public IEnumerable<Person> getData()
+    public IEnumerable<Person> GetData()
     {
         var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -18,7 +17,7 @@ public class CsvDataReader : IDataInterface
             Delimiter = ",",
             NewLine = Environment.NewLine,
         };
-
+        
         using (var fs = File.Open(CSV_FILE, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
             using (var textReader = new StreamReader(fs, Encoding.UTF8))

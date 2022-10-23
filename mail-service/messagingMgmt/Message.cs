@@ -4,9 +4,6 @@ namespace mail_service.messagingMgmt;
 
 public class Message
 {
-
-    private Person _person;
-    private List<Person> _persons;
     public string From { get; set; }
     public string To { get; set; }
     public string Subject { get; set; }

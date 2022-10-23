@@ -3,7 +3,6 @@
 public class MessageMgmt : IMessageInterface
 {
     private Mailer? _mailer = Mailer.GetInstance();
-
     public void SendMessage(Person person)
     {
         if (IMessageInterface.PersonHasBrithDay(person))

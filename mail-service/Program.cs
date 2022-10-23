@@ -14,13 +14,13 @@ static void DoWork()
     Console.WriteLine("Welcome to the Mail Service!");
 
     CsvDataReader reader = new CsvDataReader();
-    Person person = reader.getData().First();
-    List<Person> persons = reader.getData().ToList();
+    Person person = reader.GetData().First();
+    List<Person> persons = reader.GetData().ToList();
 
     IMessageInterface messageInterface = new MessageMgmt();
     //messageInterface.SendMessage(person);
 
     IReminderInterface reminderInterface = new ReminderMgmt();
     reminderInterface.IntervalBirthDayCheck(persons);
-    //reminderInterface.SendReminder(persons);
+    reminderInterface.SendReminder(persons);
 }

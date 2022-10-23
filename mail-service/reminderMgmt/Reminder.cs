@@ -18,7 +18,7 @@ public class Reminder
 
         return INSTANCE;
     }
-    
+
     public List<Person> SortContactsByBirthday(List<Person> contactList)
     {
         contactList.Sort((x, y) => x.BirthDay.CompareTo(y.BirthDay));
@@ -33,6 +33,16 @@ public class Reminder
         }
 
         return null;
+    }
+
+    public bool PersonHasBirthday(Person person)
+    {
+        if (person != null)
+        {
+            return person.BirthDay == Today.AddDays(1);
+        }
+
+        return false;
     }
 
     public bool ContactsHasBirthday(List<Person> contactList)
@@ -55,7 +65,7 @@ public class Reminder
         timer.Start();
     }
 
-    private void notifyIfAnyReminder(List<Person> listOfContacts,Timer timer)
+    private void notifyIfAnyReminder(List<Person> listOfContacts, Timer timer)
     {
         Console.WriteLine("Notification");
         if (ContactsHasBirthday(listOfContacts))

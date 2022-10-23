@@ -2,6 +2,6 @@
 
 public interface IDataInterface
 {
-    IEnumerable<Person> getData(); //TODO: Add exception .. 
+    IEnumerable<Person> GetData(); //TODO: Add exception .. 
 
 }
